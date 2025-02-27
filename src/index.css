@@ -1,0 +1,43 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+}
+
+#canvas-container {
+  position: relative;
+  width: calc(100vw - 320px);
+  height: 100vh;
+  overflow: hidden;
+}
+
+#canvas-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#root {
+  width: 320px;
+  padding: 1rem;
+  width: 100vw;
+  background-color: rebeccapurple;
+  position: absolute;
+  bottom: 0;
+  overflow-y: auto;
+  height: 25vh;
+  padding: 2rem;
+}
+
+@media only screen and (min-width: 865px) {
+  #root {
+    position: relative;
+    bottom: undefined;
+    height: 100vh;
+    width: 30vw;
+    padding: 2rem;
+  }
+}
