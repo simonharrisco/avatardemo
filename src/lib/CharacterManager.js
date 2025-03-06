@@ -127,6 +127,17 @@ export class CharacterManager {
         .toString()
         .padStart(2, "0")
     );
+    this.setHairColor(
+      Math.ceil(Math.random() * 16)
+        .toString()
+        .padStart(2, "0")
+    );
+    this.setEyeShape(
+      Math.ceil(Math.random() * 9)
+        .toString()
+        .padStart(2, "0")
+    );
+
     // console log parts
     Object.values(this.slotManagers).forEach((manager) => {
       console.log(manager.currentPart);
