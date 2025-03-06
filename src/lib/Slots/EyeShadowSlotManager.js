@@ -29,6 +29,10 @@ export class EyeShadowSlotManager extends SlotManager {
       }
     }
   }
+  setEyeShape(eyeShape) {
+    this.eyeShape = eyeShape;
+    this.selectPart(this.currentPart);
+  }
 
   // Override to handle prosthetic arms which don't need skin tone
   selectPart(partPath) {
@@ -39,13 +43,11 @@ export class EyeShadowSlotManager extends SlotManager {
       return false;
     }
 
-    // For regular arms, make sure we use the correct skin tone
-    if (partPath.includes("skintone-")) {
-      const basePart = partPath.split("skintone-")[0];
+    if (partPath.includes("skintone-") && partPath.includes("shadow-")) {
       const matchingPart = this.availableParts.find(
         (part) =>
-          part.startsWith(basePart) &&
-          part.includes(`skintone-${this.skinTone}`)
+          part.includes(`skintone-${this.skinTone}`) &&
+          part.includes(`shadow-${this.eyeShape}`)
       );
 
       if (matchingPart) {

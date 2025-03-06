@@ -1,6 +1,3 @@
-// CharacterManager.js
-
-// Import other slot managers...
 import { Skin } from "@esotericsoftware/spine-pixi-v8";
 import { ArmSlotManager } from "./Slots/ArmSlotManager";
 import { LegSlotManager } from "./Slots/LegSlotManager";
@@ -26,7 +23,6 @@ export class CharacterManager {
       head: new HeadSlotManager(spineManager, "head"),
       nose: new NoseSlotManager(spineManager, "nose"),
       neck: new NeckSlotManager(spineManager, "neck"),
-
       pupils: new BasicSlotManager(
         spineManager,
         "pupils",
@@ -37,34 +33,27 @@ export class CharacterManager {
         "mouth",
         "character/head/mouth"
       ),
-
       // its own thing
       eyes: new BasicSlotManager(
         spineManager,
         "eyes",
         "character/head/eyes-base/"
       ),
-
       // // this need to modify on BOTH eye shape AND skin tone
       eyeShadow: new EyeShadowSlotManager(spineManager, "eyeShadow"),
-
       // // these require hair color
       eyebrows: new EyebrowSlotManager(spineManager, "eyebrows", "eyebrows"),
       hair: new HairSlotManager(spineManager, "hair", "character/head/hair/"),
-
       // // other accessories
       back: new BasicSlotManager(spineManager, "back", [
         "cape",
         "back-accessories",
       ]), // cape or backpack
-
       bottoms: new BasicSlotManager(spineManager, "bottoms", [
         "skirt",
         "short",
       ]), // skirt, shorts, pants
-
       face: new BasicSlotManager(spineManager, "face", "glasses"),
-
       hat: new BasicSlotManager(spineManager, "hat", "character/clothing/hats"),
       shirt: new BasicSlotManager(
         spineManager,
@@ -94,37 +83,37 @@ export class CharacterManager {
       manager.initialize(partsList);
     });
 
-    // this.selectPart("character/body/arm-L/arm-L-prosthetic");
-    // this.selectPart("character/body/arm-R/arm-R-prosthetic");
-    // this.selectPart("character/body/leg-L/leg-L-prosthetic");
-    // this.selectPart("character/body/leg-R/leg-R-prosthetic");
-    // this.selectPart(
-    //   "character/head/head-base/head-base-01/head-base-01-skintone-01"
-    // );
-    // this.selectPart("character/head/nose/nose-01/nose-01-skintone-01");
-    // this.selectPart("character/clothing/hats/hat-01A");
-    // this.selectPart("character/clothing/shoes/shoes-01A");
-    // this.selectPart("character/head/eyes-pupils/eyes-pupils-color-01");
-    // this.selectPart("character/body/neck/neck-02/neck-02-skintone-01");
-    // this.selectPart("character/head/mouth/mouth-01-base-01");
-    // this.selectPart("character/clothing/shirts/shirt-torso-01A");
-    // this.selectPart("character/head/eyes-base/eyes-base-01");
-    // this.selectPart("character/clothing/glasses/glasses-01A");
-    // this.selectPart("character/clothing/capes/cape-01B");
-    // this.selectPart("character/clothing/shorts/shorts-01A");
+    this.selectPart("character/body/arm-L/arm-L-skintone-01");
+    this.selectPart("character/body/arm-R/arm-R-skintone-01");
+    this.selectPart("character/body/leg-L/leg-L-skintone-01");
+    this.selectPart("character/body/leg-R/leg-R-skintone-01");
+    this.selectPart(
+      "character/head/head-base/head-base-01/head-base-01-skintone-01"
+    );
+    this.selectPart("character/head/nose/nose-01/nose-01-skintone-01");
+    this.selectPart("character/clothing/hats/hat-01A");
+    this.selectPart("character/clothing/shoes/shoes-01A");
+    this.selectPart("character/head/eyes-pupils/eyes-pupils-color-01");
+    this.selectPart("character/body/neck/neck-02/neck-02-skintone-01");
+    this.selectPart("character/head/mouth/mouth-01-base-01");
+    this.selectPart("character/clothing/shirts/shirt-torso-01A");
+    this.selectPart("character/head/eyes-base/eyes-base-01");
+    this.selectPart("character/clothing/glasses/glasses-01A");
+    this.selectPart("character/clothing/capes/cape-01B");
+    this.selectPart("character/clothing/shorts/shorts-01A");
 
-    // this.selectPart("character/head/hair/hairstyle-02/hairstyle-02-color-01");
-    // this.selectPart(
-    //   "character/head/eyebrows/eyebrows-01/eyebrows-01-skintone-01"
-    // );
-    // this.selectPart(
-    //   "character/head/eyes-shadow/eyes-shadow-01/eyes-shadow-01-skintone-01"
-    // );
+    this.selectPart("character/head/hair/hairstyle-02/hairstyle-02-color-01");
+    this.selectPart(
+      "character/head/eyebrows/eyebrows-01/eyebrows-01-skintone-01"
+    );
+    this.selectPart(
+      "character/head/eyes-shadow/eyes-shadow-01/eyes-shadow-01-skintone-01"
+    );
 
-    this.startRandomize();
+    //this.startRandomize();
     // setInterval(() => {
     //   this.startRandomize();
-    // }, 1000);
+    // }, 1);
   }
 
   startRandomize() {
@@ -132,10 +121,17 @@ export class CharacterManager {
     Object.values(this.slotManagers).forEach((manager) => {
       manager.setRamdomPart();
     });
+
+    this.setSkinTone(
+      Math.ceil(Math.random() * 8)
+        .toString()
+        .padStart(2, "0")
+    );
     // console log parts
     Object.values(this.slotManagers).forEach((manager) => {
       console.log(manager.currentPart);
     });
+
     console.log("............");
 
     // Apply changes
@@ -148,7 +144,12 @@ export class CharacterManager {
     // Update all skin tone dependent slots
     this.slotManagers.armL.setSkinTone(tone);
     this.slotManagers.armR.setSkinTone(tone);
-    // Update other skin tone dependent slots...
+    this.slotManagers.legL.setSkinTone(tone);
+    this.slotManagers.legR.setSkinTone(tone);
+    this.slotManagers.head.setSkinTone(tone);
+    this.slotManagers.nose.setSkinTone(tone);
+    this.slotManagers.neck.setSkinTone(tone);
+    this.slotManagers.eyeShadow.setSkinTone(tone);
 
     // Apply changes
     this.applyChanges();
@@ -158,8 +159,8 @@ export class CharacterManager {
     this.hairColor = color;
 
     // Update all hair color dependent slots
-    // this.slotManagers.eyebrows.setHairColor(color);
-    // Update other hair color dependent slots...
+    this.slotManagers.eyebrows.setHairColor(color);
+    this.slotManagers.hair.setHairColor(color);
 
     // Apply changes
     this.applyChanges();
@@ -168,8 +169,11 @@ export class CharacterManager {
   /*  eslint-disable no-unused-vars */
   setEyeShape(shape) {
     //this.eyeColor = color;
-    // Update all eye color dependent slots
-    // ...
+    this.slotManagers.eyes.selectPart(
+      `character/head/eyes-base/eyes-base-${shape}`
+    );
+    this.slotManagers.eyeShadow.setEyeShape(shape);
+
     // Apply changes
     this.applyChanges();
   }

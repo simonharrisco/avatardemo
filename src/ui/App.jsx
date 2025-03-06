@@ -6,13 +6,18 @@ import { pixiManager } from "../lib/PixiManager.js";
 function App() {
   let anims = pixiManager.getAnimations();
 
-  let categoies = Object.keys(pixiManager.characterManager.slotManagers);
+  let categoies = Object.keys(pixiManager.characterManager.slotManagers).filter(
+    (category) =>
+      !["armL", "armR", "legL", "legR", "eyes", "eyeshadow"].includes(category)
+  );
 
   return (
     <>
       <h1>Character Builder</h1>
-      <button onClick={() => pixiManager.characterManager.startRandomize()}>
-        {" "}
+      <button
+        onClick={() => pixiManager.characterManager.startRandomize()}
+        className="mb-2 border rounded p-1 bg-white"
+      >
         randomise
       </button>
       <div
@@ -29,6 +34,67 @@ function App() {
           {anims.map((anim) => (
             <option key={anim} value={anim}>
               {anim}
+            </option>
+          ))}
+        </select>
+        <label htmlFor="skinTone">Skin tone:</label>
+        <select
+          id="skinTone"
+          onChange={(e) =>
+            pixiManager.characterManager.setSkinTone(e.target.value)
+          }
+        >
+          <option value="">Select Skin Tone</option>
+          {["01", "02", "03", "04", "05", "06", "07", "08"].map((tone) => (
+            <option key={tone} value={tone}>
+              {tone}
+            </option>
+          ))}
+        </select>
+        <label htmlFor="eyeShape">eyeShape:</label>
+        <select
+          id="eyeShape"
+          onChange={(e) =>
+            pixiManager.characterManager.setEyeShape(e.target.value)
+          }
+        >
+          <option value="">Select Eye Shape</option>
+          {["01", "02", "03", "04", "05", "06", "07", "08", "09"].map(
+            (tone) => (
+              <option key={tone} value={tone}>
+                {tone}
+              </option>
+            )
+          )}
+        </select>
+        <label htmlFor="hariColor">Hair color:</label>
+        <select
+          id="hariColor"
+          onChange={(e) =>
+            pixiManager.characterManager.setHairColor(e.target.value)
+          }
+        >
+          <option value="">Select Skin Tone</option>
+          {[
+            "01",
+            "02",
+            "03",
+            "04",
+            "05",
+            "06",
+            "07",
+            "08",
+            "09",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+          ].map((tone) => (
+            <option key={tone} value={tone}>
+              {tone}
             </option>
           ))}
         </select>
@@ -56,7 +122,7 @@ function App() {
                 <option
                   key={part}
                   value={part}
-                  defaultValue={
+                  selected={
                     part ===
                     pixiManager.characterManager.getCurrentParts()[category]
                   }

@@ -19,14 +19,7 @@ export class EyebrowSlotManager extends SlotManager {
     // If we have a current part, update it to match the new skin tone
     if (this.currentPart) {
       // Find a matching part with the new skin tone
-      const basePart = this.currentPart.split("skintone-")[0];
-      const newPart = this.availableParts.find(
-        (part) => part.startsWith(basePart) && part.includes(`skintone-${tone}`)
-      );
-
-      if (newPart) {
-        this.currentPart = newPart;
-      }
+      this.selectPart(this.currentPart);
     }
   }
 
