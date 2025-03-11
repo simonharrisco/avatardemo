@@ -62,24 +62,38 @@ export class SpineManager {
     // reset the scale so the calculations are correct
     this.spine.scale.set(1);
 
-    // Get the spine bounds
     const bounds = this.spine.getBounds();
     const spineWidth = bounds.width;
     const spineHeight = bounds.height;
 
-    // Calculate the desired height (e.g., 80% of viewport height)
-    const targetHeight = height * 0.7;
+    if (window.innerWidth > 500) {
+      // Calculate the desired height (e.g., 80% of viewport height)
+      const targetHeight = height * 0.7;
 
-    // Calculate scale to fit height while maintaining aspect ratio
-    const scale = targetHeight / spineHeight;
-    this.spine.scale.set(scale);
+      // Calculate scale to fit height while maintaining aspect ratio
+      const scale = targetHeight / spineHeight;
+      this.spine.scale.set(scale);
 
-    // Center horizontally and position at 80% of viewport height
-    this.spine.x = width / 2 + spineWidth * scale;
-    this.spine.y = height * 0.85;
+      // Center horizontally and position at 80% of viewport height
+      this.spine.x = width / 2 + (spineWidth / 2) * scale;
+      this.spine.y = height * 0.85;
 
-    // Since spine models typically have their origin at the bottom center,
-    // we need to offset by half the width to truly center it
-    this.spine.x -= (spineWidth * scale) / 2;
+      // Since spine models typically have their origin at the bottom center,
+      // we need to offset by half the width to truly center it
+    } else {
+      // Calculate the desired height (e.g., 80% of viewport height)
+      const targetHeight = height * 0.5;
+
+      // Calculate scale to fit height while maintaining aspect ratio
+      const scale = targetHeight / spineHeight;
+      this.spine.scale.set(scale);
+
+      // Center horizontally and position at 80% of viewport height
+      this.spine.x = window.innerWidth / 2;
+      this.spine.y = height * 0.65;
+
+      // Since spine models typically have their origin at the bottom center,
+      // we need to offset by half the width to truly center it
+    }
   }
 }
