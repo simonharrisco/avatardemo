@@ -35,6 +35,7 @@ class PixiManager {
       resizeTo: container,
       autoDensity: true,
       resolution: window.devicePixelRatio || 1,
+      antialias: true,
     });
 
     this.app.renderer.on("resize", () => {
