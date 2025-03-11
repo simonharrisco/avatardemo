@@ -2,8 +2,8 @@
 import { SlotManager } from "./SlotManager";
 
 export class BasicSlotManager extends SlotManager {
-  constructor(spineManager, name, slotPath) {
-    super(spineManager, name);
+  constructor(spineManager, name, slotPath, canBeEmpty = false) {
+    super(spineManager, name, canBeEmpty);
     this.slotPath = slotPath;
   }
 

@@ -87,7 +87,7 @@ class PixiManager {
   resize() {
     if (!this.app || !this.spineManager) return;
 
-    const newWidth = window.innerWidth - 320;
+    const newWidth = window.innerWidth - 500;
     const newHeight = window.innerHeight;
 
     this.spineManager.resize(newWidth, newHeight);

@@ -7,6 +7,7 @@ export class HairSlotManager extends SlotManager {
 
     this.slotPath = slotPath;
     this.hairColor = "01";
+    this.hasHat = false;
   }
 
   belongsToSlot(partPath) {
@@ -19,16 +20,45 @@ export class HairSlotManager extends SlotManager {
 
     // If we have a current part, update it to match the new skin tone
     if (this.currentPart) {
-      // Find a matching part with the new skin tone
-      const basePart = this.currentPart.split("color-")[0];
-      const newPart = this.availableParts.find(
-        (part) => part.startsWith(basePart) && part.includes(`color-${tone}`)
-      );
-
-      if (newPart) {
-        this.currentPart = newPart;
-      }
+      this.updateHairPart(this.currentPart);
     }
+  }
+
+  setHatStatus(hasHat) {
+    this.hasHat = hasHat;
+    if (this.currentPart) {
+      this.updateHairPart(this.currentPart);
+    }
+  }
+
+  // Helper to get the base hair style from a part path
+  getBaseHairStyle(partPath) {
+    // Extract the hairstyle number (e.g., "hairstyle-02" from the path)
+    const match = partPath.match(/hairstyle-(\d+)/);
+    return match ? match[0] : null;
+  }
+
+  // Find matching hair part considering hat status and color
+  findMatchingHairPart(baseStyle) {
+    const hatSuffix = this.hasHat ? "-hat" : "";
+    return this.availableParts.find(
+      (part) =>
+        part.includes(baseStyle) &&
+        part.includes(`color-${this.hairColor}`) &&
+        part.includes(hatSuffix)
+    );
+  }
+
+  updateHairPart(partPath) {
+    const baseStyle = this.getBaseHairStyle(partPath);
+    if (!baseStyle) return false;
+
+    const matchingPart = this.findMatchingHairPart(baseStyle);
+    if (matchingPart) {
+      this.currentPart = matchingPart;
+      return true;
+    }
+    return false;
   }
 
   // Override to handle prosthetic arms which don't need skin tone
@@ -40,20 +70,6 @@ export class HairSlotManager extends SlotManager {
       return false;
     }
 
-    // For regular arms, make sure we use the correct skin tone
-    if (partPath.includes("color-")) {
-      const basePart = partPath.split("color-")[0];
-      const matchingPart = this.availableParts.find(
-        (part) =>
-          part.startsWith(basePart) && part.includes(`color-${this.hairColor}`)
-      );
-      console.log("matchingPart", matchingPart);
-      if (matchingPart) {
-        this.currentPart = matchingPart;
-        return true;
-      }
-    }
-
-    return false;
+    return this.updateHairPart(partPath);
   }
 }

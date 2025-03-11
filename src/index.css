@@ -1,7 +1,7 @@
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   display: flex;
 }
 
@@ -22,22 +22,116 @@ body {
 
 #root {
   width: 320px;
-  padding: 1rem;
-  width: 100vw;
-  background-color: rebeccapurple;
-  position: absolute;
-  bottom: 0;
-  overflow-y: auto;
-  height: 25vh;
-  padding: 2rem;
+  background-color: #f0f0f0;
+  height: 100vh;
+  display: flex;
 }
 
-@media only screen and (min-width: 865px) {
+.sidebar {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.options-column {
+  width: 240px;
+  height: 100%;
+  background-color: #e0e0e0;
+  padding: 8px;
+  overflow-y: auto;
+}
+
+.categories-column {
+  max-height: 100vh;
+  overflow: scroll;
+  width: 80px;
+  height: 100%;
+  background-color: #d0d0d0;
+  padding: 8px;
+  border-left: 1px solid #ccc;
+}
+
+.category-item {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 8px;
+  background-color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 10px;
+  text-align: center;
+  padding: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.category-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.category-item.active {
+  background-color: #e8e8e8;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.option-item {
+  aspect-ratio: 1;
+  background-color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 10px;
+  text-align: center;
+  padding: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.option-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.option-item.active {
+  background-color: #e8e8e8;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
   #root {
-    position: relative;
-    bottom: undefined;
-    height: 100vh;
-    width: 30vw;
-    padding: 2rem;
+    width: 160px;
+  }
+
+  #canvas-container {
+    width: calc(100vw - 160px);
+  }
+
+  .sidebar {
+    flex-direction: row-reverse;
+  }
+
+  .options-column {
+    width: 80px;
+  }
+
+  .categories-column {
+    width: 80px;
+  }
+
+  .option-grid {
+    grid-template-columns: 1fr;
   }
 }

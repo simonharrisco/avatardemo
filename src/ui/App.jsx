@@ -4,137 +4,235 @@ import "./App.css";
 import { pixiManager } from "../lib/PixiManager.js";
 
 function App() {
-  let anims = pixiManager.getAnimations();
+  const [selectedCategory, setSelectedCategory] = useState('skinTone');
+  const [currentParts, setCurrentParts] = useState({});
+  const [currentSkinTone, setCurrentSkinTone] = useState("01");
+  const [currentHairColor, setCurrentHairColor] = useState("01");
+  const [hasHat, setHasHat] = useState(false);
+  
+  // Get all available categories
+  const categories = [
+    'skinTone',
+    'hairColor',
+    ...Object.keys(pixiManager.characterManager.slotManagers).filter(
+      (category) => !["armL", "armR", "legL", "legR", "eyes", "eyeShadow", "neck"].includes(category)
+    )
+  ];
 
-  let categoies = Object.keys(pixiManager.characterManager.slotManagers).filter(
-    (category) =>
-      !["armL", "armR", "legL", "legR", "eyes", "eyeshadow"].includes(category)
-  );
+  // Special handlers for specific categories
+  const handleSpecialCategories = (category, value) => {
+    switch(category) {
+      case 'head':
+        // For head parts that include skin tone
+        const skinTone = value.match(/skintone-(\d+)/)?.[1];
+        if (skinTone) {
+          setCurrentSkinTone(skinTone);
+          pixiManager.characterManager.setSkinTone(skinTone);
+        }
+        break;
+      case 'hair':
+        // Extract hair color from the path
+        const hairColor = value.match(/color-(\d+)/)?.[1];
+        if (hairColor) {
+          setCurrentHairColor(hairColor);
+          pixiManager.characterManager.setHairColor(hairColor);
+        }
+        break;
+      case 'hat':
+        // Update hat status
+        setHasHat(!!value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  // Filter parts based on current settings
+  const filterPartsByCurrentSettings = (parts, category) => {
+    return parts.filter(part => {
+      const partPath = part.id;
+      
+      // Filter head parts by current skin tone
+      if (category === 'head' || category === 'nose') {
+        return partPath.includes(`skintone-${currentSkinTone}`);
+      }
+      
+      // Filter hair by current hair color and hat status
+      if (category === 'hair') {
+        const matchesColor = partPath.includes(`color-${currentHairColor}`);
+        const isHatVersion = partPath.includes('-hat-');
+        return matchesColor && (hasHat === isHatVersion);
+      }
+
+      // Filter eyebrows by current skin tone and hair color
+      if (category === 'eyebrows') {
+        return partPath.includes(`skintone-${currentSkinTone}`) && 
+               (partPath.includes(`color-${currentHairColor}`) || !partPath.includes('color-'));
+      }
+
+      // For other categories, show all options
+      return true;
+    });
+  };
+
+  // Get options for special categories
+  const getSpecialOptions = (category) => {
+    switch(category) {
+      case 'skinTone':
+        return Array.from({ length: 8 }, (_, i) => ({
+          id: (i + 1).toString().padStart(2, '0'),
+          name: `Skin ${i + 1}`
+        }));
+      case 'hairColor':
+        return Array.from({ length: 16 }, (_, i) => ({
+          id: (i + 1).toString().padStart(2, '0'),
+          name: `Color ${i + 1}`
+        }));
+      default:
+        return [];
+    }
+  };
+
+  // Get parts for selected category
+  const getOptionsForCategory = (category) => {
+    if (!category) return [];
+    
+    // Handle special categories
+    if (category === 'skinTone' || category === 'hairColor') {
+      return getSpecialOptions(category);
+    }
+    
+    const parts = pixiManager.characterManager.getAvailablePartsForSlot(category);
+    const mappedParts = parts.map(part => ({
+      id: part,
+      name: part.split('/').pop()
+        .replace(/-/g, ' ')
+        .replace(`skintone ${currentSkinTone}`, '')
+        .replace(`color ${currentHairColor}`, '')
+        .replace('hat ', '')
+        .trim()
+    }));
+
+    // Filter parts based on current settings
+    return filterPartsByCurrentSettings(mappedParts, category);
+  };
+
+  // Handle category selection
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category === selectedCategory ? null : category);
+  };
+
+  // Handle option selection
+  const handleOptionClick = (partPath, category) => {
+    if (!selectedCategory) return;
+
+    // Handle special categories
+    if (category === 'skinTone') {
+      setCurrentSkinTone(partPath);
+      pixiManager.characterManager.setSkinTone(partPath);
+      return;
+    }
+    if (category === 'hairColor') {
+      setCurrentHairColor(partPath);
+      pixiManager.characterManager.setHairColor(partPath);
+      return;
+    }
+
+    if (partPath === "") {
+      pixiManager.characterManager.clearSlot(selectedCategory);
+    } else {
+      // Handle special categories first
+      handleSpecialCategories(selectedCategory, partPath);
+      // Then select the part
+      pixiManager.characterManager.selectPart(partPath);
+    }
+
+    // Update current parts after selection
+    const newParts = pixiManager.characterManager.getCurrentParts();
+    setCurrentParts(newParts);
+  };
+
+  // Get current parts and settings on mount and after any changes
+  useEffect(() => {
+    const updateCurrentState = () => {
+      const parts = pixiManager.characterManager.getCurrentParts();
+      setCurrentParts(parts);
+
+      // Try to extract current skin tone from head part
+      const headPart = parts.head;
+      if (headPart) {
+        const skinTone = headPart.match(/skintone-(\d+)/)?.[1];
+        if (skinTone) {
+          setCurrentSkinTone(skinTone);
+        }
+      }
+
+      // Try to extract current hair color from hair part
+      const hairPart = parts.hair;
+      if (hairPart) {
+        const hairColor = hairPart.match(/color-(\d+)/)?.[1];
+        if (hairColor) {
+          setCurrentHairColor(hairColor);
+        }
+      }
+
+      // Update hat status
+      setHasHat(!!parts.hat);
+    };
+
+    // Initial update
+    updateCurrentState();
+
+    // Set up an interval to check for updates
+    const intervalId = setInterval(updateCurrentState, 100);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
-    <>
-      <h1>Character Builder</h1>
-      <button
-        onClick={() => pixiManager.characterManager.startRandomize()}
-        className="mb-2 border rounded p-1 bg-white"
-      >
-        randomise
-      </button>
-      <div
-        className="
-          grid grid-cols-2 gap-2
-        "
-      >
-        <label htmlFor="animations">Animations:</label>
-        <select
-          id="animations"
-          onChange={(e) => pixiManager.setAnimation(e.target.value, true)}
-        >
-          <option value="">Select Animation</option>
-          {anims.map((anim) => (
-            <option key={anim} value={anim}>
-              {anim}
-            </option>
-          ))}
-        </select>
-        <label htmlFor="skinTone">Skin tone:</label>
-        <select
-          id="skinTone"
-          onChange={(e) =>
-            pixiManager.characterManager.setSkinTone(e.target.value)
-          }
-        >
-          <option value="">Select Skin Tone</option>
-          {["01", "02", "03", "04", "05", "06", "07", "08"].map((tone) => (
-            <option key={tone} value={tone}>
-              {tone}
-            </option>
-          ))}
-        </select>
-        <label htmlFor="eyeShape">eyeShape:</label>
-        <select
-          id="eyeShape"
-          onChange={(e) =>
-            pixiManager.characterManager.setEyeShape(e.target.value)
-          }
-        >
-          <option value="">Select Eye Shape</option>
-          {["01", "02", "03", "04", "05", "06", "07", "08", "09"].map(
-            (tone) => (
-              <option key={tone} value={tone}>
-                {tone}
-              </option>
-            )
-          )}
-        </select>
-        <label htmlFor="hariColor">Hair color:</label>
-        <select
-          id="hariColor"
-          onChange={(e) =>
-            pixiManager.characterManager.setHairColor(e.target.value)
-          }
-        >
-          <option value="">Select Skin Tone</option>
-          {[
-            "01",
-            "02",
-            "03",
-            "04",
-            "05",
-            "06",
-            "07",
-            "08",
-            "09",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-          ].map((tone) => (
-            <option key={tone} value={tone}>
-              {tone}
-            </option>
-          ))}
-        </select>
+    <div className="sidebar">
+      <div className="options-column">
+        {selectedCategory && (
+          <div className="option-grid">
+            {selectedCategory !== 'skinTone' && selectedCategory !== 'hairColor' && 
+              pixiManager.characterManager.slotManagers[selectedCategory].getCanBeEmpty() && (
+              <div 
+                className={`option-item ${!currentParts[selectedCategory] ? 'active' : ''}`}
+                onClick={() => handleOptionClick("", selectedCategory)}
+              >
+                None
+              </div>
+            )}
+            {getOptionsForCategory(selectedCategory).map((option) => (
+              <div
+                key={option.id}
+                className={`option-item ${
+                  selectedCategory === 'skinTone' ? currentSkinTone === option.id ? 'active' : '' :
+                  selectedCategory === 'hairColor' ? currentHairColor === option.id ? 'active' : '' :
+                  currentParts[selectedCategory] === option.id ? 'active' : ''
+                }`}
+                onClick={() => handleOptionClick(option.id, selectedCategory)}
+              >
+                {option.name}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-      {categoies.map((category) => {
-        let parts =
-          pixiManager.characterManager.getAvailablePartsForSlot(category);
-
-        return (
+      <div className="categories-column">
+        {categories.map((category) => (
           <div
             key={category}
-            className="
-             grid grid-cols-2 gap-2
-            "
+            className={`category-item ${selectedCategory === category ? 'active' : ''}`}
+            onClick={() => handleCategoryClick(category)}
           >
-            <label htmlFor={category}>{category}:</label>
-            <select
-              id={category}
-              onChange={(e) => {
-                pixiManager.characterManager.selectPart(e.target.value);
-              }}
-            >
-              <option value="">Select Part</option>
-              {parts.map((part) => (
-                <option
-                  key={part}
-                  value={part}
-                  selected={
-                    part ===
-                    pixiManager.characterManager.getCurrentParts()[category]
-                  }
-                >
-                  {part.substring(part.lastIndexOf("/") + 1)}
-                </option>
-              ))}
-            </select>
+            {category === 'skinTone' ? 'Skin' :
+             category === 'hairColor' ? 'Hair Color' :
+             category}
           </div>
-        );
-      })}
-    </>
+        ))}
+      </div>
+    </div>
   );
 }
 

@@ -1,10 +1,11 @@
 // SlotManager.js
 export class SlotManager {
-  constructor(spineManager, name) {
+  constructor(spineManager, name, canBeEmpty = false) {
     this.spineManager = spineManager;
     this.slotName = name;
     this.currentPart = null;
     this.availableParts = [];
+    this.canBeEmpty = canBeEmpty;
   }
 
   initialize(partsList) {
@@ -32,6 +33,12 @@ export class SlotManager {
   }
 
   setRamdomPart() {
+    // If slot can be empty, 30% chance to clear it
+    if (this.canBeEmpty && Math.random() < 0.3) {
+      this.clear();
+      return;
+    }
+
     const randomIndex = Math.floor(Math.random() * this.availableParts.length);
     this.currentPart = this.availableParts[randomIndex];
   }
@@ -44,7 +51,15 @@ export class SlotManager {
     return [...this.availableParts];
   }
 
+  getCanBeEmpty() {
+    return this.canBeEmpty;
+  }
+
   clear() {
-    this.currentPart = null;
+    if (this.canBeEmpty) {
+      this.currentPart = null;
+    } else {
+      console.warn(`Slot ${this.slotName} cannot be empty`);
+    }
   }
 }

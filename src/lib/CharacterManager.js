@@ -15,7 +15,7 @@ export class CharacterManager {
 
     // Create all slot managers
     this.slotManagers = {
-      // skin tone managers
+      // skin tone managers (cannot be empty)
       armL: new ArmSlotManager(spineManager, "L"),
       armR: new ArmSlotManager(spineManager, "R"),
       legL: new LegSlotManager(spineManager, "L"),
@@ -39,31 +39,42 @@ export class CharacterManager {
         "eyes",
         "character/head/eyes-base/"
       ),
-      // // this need to modify on BOTH eye shape AND skin tone
+      // this need to modify on BOTH eye shape AND skin tone
       eyeShadow: new EyeShadowSlotManager(spineManager, "eyeShadow"),
-      // // these require hair color
+      // these require hair color
       eyebrows: new EyebrowSlotManager(spineManager, "eyebrows", "eyebrows"),
       hair: new HairSlotManager(spineManager, "hair", "character/head/hair/"),
-      // // other accessories
-      back: new BasicSlotManager(spineManager, "back", [
-        "cape",
-        "back-accessories",
-      ]), // cape or backpack
-      bottoms: new BasicSlotManager(spineManager, "bottoms", [
-        "skirt",
-        "short",
-      ]), // skirt, shorts, pants
-      face: new BasicSlotManager(spineManager, "face", "glasses"),
-      hat: new BasicSlotManager(spineManager, "hat", "character/clothing/hats"),
+      // other accessories (can be empty)
+      back: new BasicSlotManager(
+        spineManager,
+        "back",
+        ["cape", "back-accessories"],
+        true
+      ),
+      bottoms: new BasicSlotManager(
+        spineManager,
+        "bottoms",
+        ["skirt", "short"],
+        false
+      ),
+      face: new BasicSlotManager(spineManager, "face", "glasses", true),
+      hat: new BasicSlotManager(
+        spineManager,
+        "hat",
+        "character/clothing/hats",
+        true
+      ),
       shirt: new BasicSlotManager(
         spineManager,
         "shirt",
-        "character/clothing/shirts"
+        "character/clothing/shirts",
+        false
       ),
       shoes: new BasicSlotManager(
         spineManager,
         "shoes",
-        "character/clothing/shoes"
+        "character/clothing/shoes",
+        true
       ),
     };
 
@@ -122,6 +133,10 @@ export class CharacterManager {
       manager.setRamdomPart();
     });
 
+    // After randomizing, update hair based on hat status
+    const hasHat = !!this.slotManagers.hat.getCurrentPart();
+    this.slotManagers.hair.setHatStatus(hasHat);
+
     this.setSkinTone(
       Math.ceil(Math.random() * 8)
         .toString()
@@ -137,13 +152,6 @@ export class CharacterManager {
         .toString()
         .padStart(2, "0")
     );
-
-    // console log parts
-    Object.values(this.slotManagers).forEach((manager) => {
-      console.log(manager.currentPart);
-    });
-
-    console.log("............");
 
     // Apply changes
     this.applyChanges();
@@ -191,10 +199,15 @@ export class CharacterManager {
 
   selectPart(partPath) {
     // Find which slot this part belongs to
-    /*  eslint-disable no-unused-vars */
     for (const [slotName, manager] of Object.entries(this.slotManagers)) {
       if (manager.belongsToSlot(partPath)) {
         manager.selectPart(partPath);
+
+        // If this is a hat change, update the hair
+        if (slotName === "hat") {
+          this.slotManagers.hair.setHatStatus(!!partPath); // Convert to boolean
+        }
+
         this.applyChanges();
         return true;
       }
@@ -207,6 +220,12 @@ export class CharacterManager {
   clearSlot(slotName) {
     if (this.slotManagers[slotName]) {
       this.slotManagers[slotName].clear();
+
+      // If clearing a hat, update the hair
+      if (slotName === "hat") {
+        this.slotManagers.hair.setHatStatus(false);
+      }
+
       this.applyChanges();
       return true;
     }

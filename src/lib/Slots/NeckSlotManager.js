@@ -18,7 +18,11 @@ export class NeckSlotManager extends SlotManager {
     // If we have a current part, update it to match the new skin tone
     if (this.currentPart) {
       // Find a matching part with the new skin tone
-      const basePart = this.currentPart.split("skintone-")[0];
+      let basePart = this.currentPart.split("skintone-")[0];
+      // WE ARE OVERRIDING ANY NECK 1 BECAUSE IT LOOKS STUPID
+      // NECK 2 ONLY GANG
+      // YOULL NEVER BEAT MY NECK 2
+      basePart = "character/body/neck/neck-02/neck-02-";
       const newPart = this.availableParts.find(
         (part) => part.startsWith(basePart) && part.includes(`skintone-${tone}`)
       );
@@ -41,6 +45,9 @@ export class NeckSlotManager extends SlotManager {
     // make sure we use the correct skin tone
     if (partPath.includes("skintone-")) {
       const basePart = partPath.split("skintone-")[0];
+      /// lets overwrite this shit
+
+      console.log("basepart: ", basePart);
       const matchingPart = this.availableParts.find(
         (part) =>
           part.startsWith(basePart) &&
