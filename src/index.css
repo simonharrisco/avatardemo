@@ -58,7 +58,7 @@ body {
 .categories-column {
   max-height: 100vh;
   overflow: scroll;
-  width: 80px;
+  width: 84px;
   height: 100%;
   background-color: #e8ffe5;
   padding: 8px;
