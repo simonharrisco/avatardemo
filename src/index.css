@@ -1,3 +1,6 @@
+* {
+  overflow-x: hidden;
+}
 body {
   padding: 0;
   margin: 0;
@@ -7,7 +10,7 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  background-color: #E8FFE5;
+  background-color: #e8ffe5;
 }
 
 #canvas-container {
@@ -27,7 +30,7 @@ body {
 
 #root {
   width: 320px;
-  background-color: #FFF8E7;
+  background-color: #fff8e7;
   height: 100vh;
   display: flex;
   box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
@@ -46,7 +49,7 @@ body {
 .options-column {
   width: 240px;
   height: 100%;
-  background-color: #E3F4FF;
+  background-color: #e3f4ff;
   padding: 8px;
   overflow-y: auto;
   -webkit-user-select: none;
@@ -60,9 +63,9 @@ body {
   overflow: scroll;
   width: 80px;
   height: 100%;
-  background-color: #E8FFE5;
+  background-color: #e8ffe5;
   padding: 8px;
-  border-left: 3px dashed #7AC77A;
+  border-left: 3px dashed #7ac77a;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -73,7 +76,7 @@ body {
   width: 64px;
   height: 64px;
   margin-bottom: 12px;
-  background-color: #F0FFF0;
+  background-color: #f0fff0;
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -85,7 +88,7 @@ body {
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   transform: rotate(-2deg);
-  border: 2px solid #7AC77A;
+  border: 2px solid #7ac77a;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -105,8 +108,8 @@ body {
 .category-item.active {
   box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
   transform: rotate(0deg) scale(0.95);
-  border: 2px solid #87CEFF;
-  background-color: #E3F4FF;
+  border: 2px solid #87ceff;
+  background-color: #e3f4ff;
 }
 
 .option-grid {
@@ -121,7 +124,7 @@ body {
 
 .option-item {
   aspect-ratio: 1;
-  background-color: #D5EEFF;
+  background-color: #d5eeff;
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -133,7 +136,7 @@ body {
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   transform: rotate(-1deg);
-  border: 2px solid #87CEFF;
+  border: 2px solid #87ceff;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -153,8 +156,8 @@ body {
 .option-item.active {
   box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
   transform: rotate(0deg) scale(0.95);
-  border: 2px solid #4CAF50;
-  background-color: #E8FFE5;
+  border: 2px solid #4caf50;
+  background-color: #e8ffe5;
 }
 
 @media (max-width: 768px) {
@@ -221,7 +224,7 @@ body {
 
   .categories-column {
     border-left: none;
-    border-top: 3px dashed #7AC77A;
+    border-top: 3px dashed #7ac77a;
     display: flex;
   }
 
