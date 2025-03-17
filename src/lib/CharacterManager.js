@@ -10,8 +10,9 @@ import { HairSlotManager } from "./Slots/HairSlotManager";
 import { EyebrowSlotManager } from "./Slots/EyebrowSlotManager";
 
 export class CharacterManager {
-  constructor(spineManager) {
+  constructor(spineManager, animationManager) {
     this.spineManager = spineManager;
+    this.animationManager = animationManager;
 
     // Create all slot managers
     this.slotManagers = {
@@ -209,6 +210,15 @@ export class CharacterManager {
         }
 
         this.applyChanges();
+
+        if (
+          slotName == "shirt" ||
+          slotName == "bottoms" ||
+          slotName == "shoes"
+        ) {
+          this.animationManager?.playCheckoutNewClothes(0.05);
+        }
+
         return true;
       }
     }

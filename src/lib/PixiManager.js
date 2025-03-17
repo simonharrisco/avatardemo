@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import { AssetLoader } from "./AssetLoader";
 import { SpineManager } from "./SpineManager";
 import { CharacterManager } from "./CharacterManager";
+import { AnimationManager } from "./AnimationManager";
 
 class PixiManager {
   static instance = null;
@@ -19,6 +20,8 @@ class PixiManager {
     this.assetLoader = new AssetLoader();
     this.spineManager = null;
     this.skinManager = null;
+    this.characterManager = null;
+    this.animationManager = null;
   }
 
   async init() {
@@ -56,7 +59,11 @@ class PixiManager {
 
     // Create managers after initialization
     this.spineManager = new SpineManager(this.app);
-    this.characterManager = new CharacterManager(this.spineManager);
+    this.animationManager = new AnimationManager(this.spineManager);
+    this.characterManager = new CharacterManager(
+      this.spineManager,
+      this.animationManager
+    );
   }
 
   async loadData() {
@@ -70,16 +77,11 @@ class PixiManager {
     // Initialize skin manager
     this.characterManager.initialize();
 
-    // Get animations and set a default
-    let anims = this.spineManager.getAnimations();
-    if (anims.length) {
-      // set idle if exists
-      if (anims.includes("idles/idle")) {
-        this.spineManager.setAnimation("idles/idle", true);
-      } else {
-        this.spineManager.setAnimation(anims[0], true);
-      }
-    }
+    // Initialize animation manager
+    this.animationManager.initialize();
+
+    // Get animations and set a default idle
+    this.animationManager.playRandomIdle();
 
     // run first resize for consistency
     this.resize();
@@ -111,7 +113,28 @@ class PixiManager {
   }
 
   setAnimation(name, loop) {
-    this.spineManager?.setAnimation(name, loop);
+    if (loop) {
+      this.animationManager?.clearQueue();
+      this.animationManager?._playAnimation(name, loop);
+    } else {
+      this.animationManager?.queueAnimation(name, loop);
+    }
+  }
+
+  queueAnimation(name, loop = false) {
+    this.animationManager?.queueAnimation(name, loop);
+  }
+
+  queueAnimationFront(name, loop = false) {
+    this.animationManager?.queueAnimationFront(name, loop);
+  }
+
+  setWheelchairMode(enabled) {
+    this.animationManager?.setWheelchairMode(enabled);
+  }
+
+  clearAnimationQueue() {
+    this.animationManager?.clearQueue();
   }
 
   toggleSkin(name) {
