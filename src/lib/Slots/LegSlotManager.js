@@ -42,7 +42,10 @@ export class LegSlotManager extends SlotManager {
 
     // If selecting a prosthetic, just use it directly
     if (partPath.includes("prosthetic")) {
-      console.log(`LegSlotManager (${this.side}) setting prosthetic:`, partPath);
+      console.log(
+        `LegSlotManager (${this.side}) setting prosthetic:`,
+        partPath
+      );
       this.currentPart = partPath;
       return true;
     }
@@ -57,12 +60,19 @@ export class LegSlotManager extends SlotManager {
       );
 
       if (matchingPart) {
-        console.log(`LegSlotManager (${this.side}) setting normal leg:`, matchingPart);
+        console.log(
+          `LegSlotManager (${this.side}) setting normal leg:`,
+          matchingPart
+        );
         this.currentPart = matchingPart;
         return true;
       }
     }
 
     return false;
+  }
+
+  setRamdomPart() {
+    return;
   }
 }
