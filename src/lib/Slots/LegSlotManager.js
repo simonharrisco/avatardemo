@@ -31,20 +31,23 @@ export class LegSlotManager extends SlotManager {
 
   // Override to handle prosthetic arms which don't need skin tone
   selectPart(partPath) {
+    console.log(`LegSlotManager (${this.side}) selecting part:`, partPath);
     if (!this.availableParts.includes(partPath)) {
       console.warn(
-        `Part ${partPath} is not available for slot ${this.slotName}`
+        `Part ${partPath} is not available for slot ${this.slotName}. Available parts:`,
+        this.availableParts
       );
       return false;
     }
 
     // If selecting a prosthetic, just use it directly
     if (partPath.includes("prosthetic")) {
+      console.log(`LegSlotManager (${this.side}) setting prosthetic:`, partPath);
       this.currentPart = partPath;
       return true;
     }
 
-    // For regular arms, make sure we use the correct skin tone
+    // For regular legs, make sure we use the correct skin tone
     if (partPath.includes("skintone-")) {
       const basePart = partPath.split("skintone-")[0];
       const matchingPart = this.availableParts.find(
@@ -54,6 +57,7 @@ export class LegSlotManager extends SlotManager {
       );
 
       if (matchingPart) {
+        console.log(`LegSlotManager (${this.side}) setting normal leg:`, matchingPart);
         this.currentPart = matchingPart;
         return true;
       }

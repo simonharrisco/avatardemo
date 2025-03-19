@@ -31,15 +31,18 @@ export class ArmSlotManager extends SlotManager {
 
   // Override to handle prosthetic arms which don't need skin tone
   selectPart(partPath) {
+    console.log(`ArmSlotManager (${this.side}) selecting part:`, partPath);
     if (!this.availableParts.includes(partPath)) {
       console.warn(
-        `Part ${partPath} is not available for slot ${this.slotName}`
+        `Part ${partPath} is not available for slot ${this.slotName}. Available parts:`,
+        this.availableParts
       );
       return false;
     }
 
     // If selecting a prosthetic, just use it directly
     if (partPath.includes("prosthetic")) {
+      console.log(`ArmSlotManager (${this.side}) setting prosthetic:`, partPath);
       this.currentPart = partPath;
       return true;
     }
@@ -54,6 +57,7 @@ export class ArmSlotManager extends SlotManager {
       );
 
       if (matchingPart) {
+        console.log(`ArmSlotManager (${this.side}) setting normal arm:`, matchingPart);
         this.currentPart = matchingPart;
         return true;
       }

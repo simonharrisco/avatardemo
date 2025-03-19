@@ -161,6 +161,10 @@ body {
   background-color: #e8ffe5;
 }
 
+.emoji-holder {
+  font-size: x-large;
+}
+
 @media (max-width: 768px) {
   #root {
     width: 160px;

@@ -43,7 +43,23 @@ export function CategoryItem({ category, isActive, currentParts, currentHairColo
           </div>
         );
       }
-      return <div>Skin</div>;
+      return <div>👤</div>;
+    }
+
+    // For accessibility category, show a wheelchair icon
+    if (category === "accessibility") {
+      return (
+        <div style={{
+          fontSize: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          height: '100%'
+        }}>
+          ♿
+        </div>
+      );
     }
 
     // For hair color category, show current hair
@@ -83,7 +99,7 @@ export function CategoryItem({ category, isActive, currentParts, currentHairColo
           </div>
         );
       }
-      return <div>Hair Color</div>;
+      return <div>💇</div>;
     }
 
     if (currentParts[category]) {
@@ -110,13 +126,30 @@ export function CategoryItem({ category, isActive, currentParts, currentHairColo
       );
     }
 
+    // Show emojis for categories when no part is selected
+    const categoryEmojis = {
+      back: "🎒",
+      bottoms: "👖",
+      face: "👓",
+      hat: "🧢",
+      shirt: "👕",
+      shoes: "👟",
+      eyes: "👁️",
+      mouth: "👄",
+      pupils: "👁️",
+      eyebrows: "🤨",
+      hair: "💇",
+      nose: "👃",
+      head: "👤",
+      neck: "👔",
+      skinTone: "👤",
+      hairColor: "💇",
+      accessibility: "♿"
+    };
+
     return (
-      <div>
-        {category === "skinTone"
-          ? "Skin"
-          : category === "hairColor"
-          ? "Hair Color"
-          : category}
+      <div className="emoji-holder">
+        {categoryEmojis[category] || category}
       </div>
     );
   };

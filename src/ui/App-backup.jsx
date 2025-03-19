@@ -126,7 +126,7 @@ function App() {
                 }
               }}
             >
-              {canBeEmpty && <option value="">None</option>}
+              {canBeEmpty && <option value="">🚫</option>}
               {parts.map((part) => (
                 <option
                   key={part}

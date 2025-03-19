@@ -83,16 +83,25 @@ export class CharacterManager {
     this.skinTone = "01";
     this.hairColor = "01";
     this.eyeColor = "01";
+    
+    // Accessibility state
+    this.prosthetics = {
+      armL: false,
+      armR: false,
+      legL: false,
+      legR: false
+    };
   }
 
   initialize(partsList) {
     partsList = this.spineManager.spine.skeleton.data.skins.map(
       (skin) => skin.name
     );
-    console.log(partsList);
+    console.log('All available parts:', partsList);
     // Initialize each slot manager with the parts list
     Object.values(this.slotManagers).forEach((manager) => {
       manager.initialize(partsList);
+      console.log(`Parts for ${manager.slotName}:`, manager.getAvailableParts());
     });
 
     this.selectPart("character/body/arm-L/arm-L-skintone-01");
@@ -311,5 +320,42 @@ export class CharacterManager {
     });
 
     return parts;
+  }
+
+  // Add new methods for prosthetics management
+  toggleProsthetic(limb) {
+    if (!['armL', 'armR', 'legL', 'legR'].includes(limb)) return;
+    
+    this.prosthetics[limb] = !this.prosthetics[limb];
+    
+    if (this.prosthetics[limb]) {
+      // Use the correct prosthetic part path with uppercase L/R
+      const partPath = `character/body/${limb.replace(/([A-Z])/g, '-$1')}/${limb.replace(/([A-Z])/g, '-$1')}-prosthetic`;
+      console.log('Setting prosthetic:', partPath);
+      console.log('Available parts:', this.slotManagers[limb].getAvailableParts());
+      const success = this.slotManagers[limb].selectPart(partPath);
+      console.log('Select part success:', success);
+    } else {
+      // Revert to normal limb with current skin tone
+      const partPath = `character/body/${limb.replace(/([A-Z])/g, '-$1')}/${limb.replace(/([A-Z])/g, '-$1')}-skintone-${this.skinTone}`;
+      console.log('Setting normal limb:', partPath);
+      console.log('Available parts:', this.slotManagers[limb].getAvailableParts());
+      const success = this.slotManagers[limb].selectPart(partPath);
+      console.log('Select part success:', success);
+    }
+    
+    this.applyChanges();
+  }
+
+  getProstheticsState() {
+    return { ...this.prosthetics };
+  }
+
+  toggleWheelchair() {
+    this.animationManager.setWheelchairMode(!this.animationManager.useWheelchair);
+  }
+
+  isWheelchairEnabled() {
+    return this.animationManager.useWheelchair;
   }
 }

@@ -4,6 +4,8 @@ import "./App.css";
 import { pixiManager } from "../lib/PixiManager.js";
 import { CategoryItem } from "../components/CategoryItem";
 import { OptionsGrid } from "../components/OptionsGrid";
+import { OptionItem } from "../components/OptionItem.jsx";
+import { AccessibilityOptions } from "../components/AccessibilityOptions";
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState("skinTone");
@@ -22,6 +24,7 @@ function App() {
           category
         )
     ),
+    "accessibility",
   ];
 
   // Special handlers for specific categories
@@ -211,23 +214,36 @@ function App() {
   return (
     <div className="sidebar">
       <div className="options-column">
-        {selectedCategory && (
-          <OptionsGrid
-            selectedCategory={selectedCategory}
-            currentParts={currentParts}
-            currentSkinTone={currentSkinTone}
-            currentHairColor={currentHairColor}
-            options={getOptionsForCategory(selectedCategory)}
-            onOptionClick={handleOptionClick}
-            canBeEmpty={
-              selectedCategory !== "skinTone" &&
-              selectedCategory !== "hairColor" &&
-              pixiManager.characterManager.slotManagers[selectedCategory]?.getCanBeEmpty()
-            }
-          />
+        {selectedCategory === "accessibility" ? (
+          <AccessibilityOptions />
+        ) : (
+          selectedCategory && (
+            <OptionsGrid
+              selectedCategory={selectedCategory}
+              currentParts={currentParts}
+              currentSkinTone={currentSkinTone}
+              currentHairColor={currentHairColor}
+              options={getOptionsForCategory(selectedCategory)}
+              onOptionClick={handleOptionClick}
+              canBeEmpty={
+                selectedCategory !== "skinTone" &&
+                selectedCategory !== "hairColor" &&
+                pixiManager.characterManager.slotManagers[
+                  selectedCategory
+                ]?.getCanBeEmpty()
+              }
+            />
+          )
         )}
       </div>
       <div className="categories-column">
+        {/* randomise button */}
+        <div
+          className={`category-item`}
+          onClick={() => pixiManager.characterManager.startRandomize()}
+        >
+          <div className="emoji-holder">🎲</div>
+        </div>
         {categories.map((category) => (
           <CategoryItem
             key={category}
